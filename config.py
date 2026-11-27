@@ -1,9 +1,14 @@
 import os
 
 # Configuration for Telegram Auto Reply Bot (@Botteasads_bot)
+# Set TELEGRAM_TOKEN in the host environment (never commit tokens).
 
-BOT_TOKEN = os.getenv("TELEGRAM_TOKEN") or os.getenv("TELEGREAM_TOKEN") or os.getenv("BOT_TOKEN", "8828926827:AAGTC0Mc3UV0NMiwNLC8Du6wbxiHDdzvINg")
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "AQ.Ab8RN6JkVEgPsl-bxbODU0yWQ35RHnNa9NyVqCB8B97KvrOhmw")
+BOT_TOKEN = os.getenv("TELEGRAM_TOKEN") or os.getenv("BOT_TOKEN")
+if not BOT_TOKEN:
+    raise RuntimeError(
+        "TELEGRAM_TOKEN is not set. Add it as an environment variable on your host."
+    )
+
 CHANNEL_URL = "https://t.me/F7_service"
 CHANNEL_HANDLE = "@F7_service"
 
