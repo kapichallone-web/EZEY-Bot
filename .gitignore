@@ -6,3 +6,4 @@ __pycache__/
 bot_token.env
 *.log
 .DS_Store
+node_modules/
