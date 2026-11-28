@@ -169,9 +169,33 @@ def main():
     )
 
     print("Bot is active and listening for messages...")
-    application.run_polling()
+    # Clear any stale webhook so long-polling can receive /start reliably.
+    application.run_polling(drop_pending_updates=True, allowed_updates=Update.ALL_TYPES)
 
 
 if __name__ == "__main__":
     import asyncio
-    main()
+    from telegram.error import Conflict
+
+    for attempt in range(1, 4):
+        try:
+            main()
+            break
+        except Conflict:
+            logger.error(
+                "Webhook conflict on attempt %s — deleting webhook and retrying...",
+                attempt,
+            )
+            try:
+                import urllib.request
+
+                token = config.BOT_TOKEN
+                urllib.request.urlopen(
+                    f"https://api.telegram.org/bot{token}/deleteWebhook"
+                    "?drop_pending_updates=true",
+                    timeout=20,
+                ).read()
+            except Exception as e:
+                logger.error("Failed to delete webhook: %s", e)
+            if attempt == 3:
+                raise
